@@ -1,0 +1,39 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	    <property name="locations">
+	        <value>classpath:application.properties</value>
+	    </property>
+	</bean>
+	<bean id="searchService"
+        class="com.hrycan.service.SearchServiceImpl">
+	        <constructor-arg value="${searchservice.indexDirectory}" />
+	        <property name="fragmentNumber" value="${searchservice.fragmentNumber}" />
+	        <property name="fragmentSize" value="${searchservice.fragmentSize}" />
+			<property name="maxNumberOfResults" value="${searchservice.maxNumberOfResults}" />
+			<property name="searchField" value="${searchservice.searchField}" />
+			<property name="paginator">
+				<bean class="com.hrycan.utils.Paginator" />
+			</property>
+    </bean>
+        
+<!--    <bean id="searchService"-->
+<!--        class="org.springframework.remoting.rmi.RmiProxyFactoryBean">-->
+<!--        <property name="serviceUrl"-->
+<!--            value="rmi://localhost:1299/SearchService" />-->
+<!--        <property name="serviceInterface"-->
+<!--            value="com.hrycan.service.SearchService" />-->
+<!--    </bean>   -->
+    
+<!--    <bean id="searchService"-->
+<!--        class="org.springframework.remoting.httpinvoker.HttpInvokerProxyFactoryBean">-->
+<!--        <property name="serviceUrl"-->
+<!--            value="http://localhost:8080/webapp/services/SearchService" />-->
+<!--        <property name="serviceInterface"-->
+<!--            value="com.hrycan.service.SearchService" />-->
+<!--    </bean>   -->
+        
+</beans>
