@@ -1,5 +1,7 @@
 package com.hrycan.search;
 
+import java.io.IOException;
+
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.CachingTokenFilter;
 import org.apache.lucene.analysis.TokenStream;
@@ -28,10 +30,10 @@ public class HighlighterUtil {
 	 * @return 
 	 * 		array of fragments from fieldContents with terms used in query
 	 * 		in <b> </b> tags
-	 * @throws Exception
+	 * @throws IOException 
 	 */
 	public String[] getFragmentsWithHighlightedTerms(Analyzer analyzer, Query query, 
-			String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws Exception {
+			String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException {
 
 		TokenStream stream = TokenSources.getTokenStream(fieldName, fieldContents, analyzer);
 		SpanScorer scorer = new SpanScorer(query, fieldName,
@@ -60,10 +62,10 @@ public class HighlighterUtil {
 	 * 		array of fragments from fieldContents with terms used in query
 	 * 		in <b> </b> tags
 	 * @return
-	 * @throws Exception
+	 * @throws IOException 
 	 */
 	public String[] getFragmentsWithHighlightedTerms(TermPositionVector termPosVector, Query query, 
-			String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws Exception {
+			String fieldName, String fieldContents, int fragmentNumber, int fragmentSize) throws IOException  {
 			
 		TokenStream stream = TokenSources.getTokenStream(termPosVector);
 		SpanScorer scorer = new SpanScorer(query, fieldName,
