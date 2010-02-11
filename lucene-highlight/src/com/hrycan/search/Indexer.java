@@ -48,14 +48,16 @@ public class Indexer {
 					Document doc = new Document();
 					
 					String fileContent = readFile(file);
-					if (fileContent != null ) {
+					if (fileContent != null) {
 						String[] parsed = fileContent.split("\\n", 4);
 						if (parsed.length == 4) {
 							doc.add(new Field("author", parsed[0], Field.Store.YES, Field.Index.NOT_ANALYZED));
 							doc.add(new Field("date", parsed[1], Field.Store.YES, Field.Index.NOT_ANALYZED));
 							doc.add(new Field("source", parsed[2], Field.Store.YES, Field.Index.NOT_ANALYZED));
-							doc.add(new Field("contents", parsed[3], Field.Store.COMPRESS, Field.Index.ANALYZED, Field.TermVector.WITH_POSITIONS_OFFSETS));
-							doc.add(new Field("filepath", file.getCanonicalPath(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+							doc.add(new Field("contents", parsed[3], Field.Store.COMPRESS, Field.Index.ANALYZED, 
+									Field.TermVector.WITH_POSITIONS_OFFSETS));
+							doc.add(new Field("filepath", file.getCanonicalPath(), Field.Store.YES, 
+									Field.Index.NOT_ANALYZED));
 							doc.add(new Field("filename", file.getName(), Field.Store.YES, Field.Index.NOT_ANALYZED));
 							
 							writer.addDocument(doc);
@@ -65,8 +67,7 @@ public class Indexer {
 			}
 			
 			numDocsIndexed = writer.numDocs();
-		}
-		finally {
+		} finally {
 			if (writer != null) {
 				writer.optimize();
 				writer.close();
@@ -74,8 +75,8 @@ public class Indexer {
 		}
 		
 		long total = System.currentTimeMillis() - start;
-		log.info("Indexing complete: indexed " + numDocsIndexed + " files in " + total + "ms.  " +
-				"average=" + (total/numDocsIndexed) + "ms per file.");
+		log.info("Indexing complete: indexed " + numDocsIndexed + " files in " + total + "ms.  " 
+				+ "average=" + (total / numDocsIndexed) + "ms per file.");
 		
 	}
 	
@@ -96,7 +97,7 @@ public class Indexer {
 		String result = "";
 		FileInputStream fin = new FileInputStream(file);
 
-		byte fileContent[] = new byte[(int) file.length()];
+		byte[] fileContent = new byte[(int) file.length()];
 		fin.read(fileContent);
 		result = new String(fileContent);
 		fin.close();
