@@ -65,7 +65,7 @@ public class SearchServiceImpl implements SearchService {
 		TopDocs hits = searcher.search(query, maxNumberOfResults);
 		ArrayLocation arrayLocation = paginator.calculateArrayLocation(hits.scoreDocs.length, pageNumber, pageSize);
 		
-		for (int i = arrayLocation.getStart(); i < arrayLocation.getEnd(); i++) {
+		for (int i = arrayLocation.getStart() - 1; i < arrayLocation.getEnd(); i++) {
 			SearchResult sr = new SearchResult();
 			
 			int docId = hits.scoreDocs[i].doc;
