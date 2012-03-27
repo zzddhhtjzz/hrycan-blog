@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                   value="%-5p - %m - %c %x %n"/>
+        </layout>
+    </appender>
+
+    <category name="com.hrycan.prime">
+        <priority value="info"/>
+    </category>
+    
+    <category name="org.hibernate.SQL" >
+        <priority value="ALL"/>
+    </category>
+<!--     <category name="org.hibernate.type" > -->
+<!--         <priority value="DEBUG"/> -->
+<!--     </category> -->
+    <category name="org.hibernate.cache" >
+        <priority value="ALL"/>
+    </category>
+
+    <root>
+        <priority value="info"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+
+</log4j:configuration>

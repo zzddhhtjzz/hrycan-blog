@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+
+</h:head>
+<h:body>
+    <ui:composition template="/template.xhtml">
+        <ui:define name="heading">
+            My Heading
+        </ui:define>
+        
+        
+        <ui:define name="body">
+            <h:form id="form">
+                
+                <h:panelGroup id="dataPanel">   
+                    <p:dataTable value="#{employeesController.lazyModel}" 
+                    	id="empTable"
+                    	var="item"
+                    	paginator="true"
+                    	rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                 		rowsPerPageTemplate="10,20,50" >
+                        
+                        <p:column headerText="Last Name &nbsp;&nbsp;"  sortBy="#{item.lastName}">
+                            <h:outputText value="#{item.lastName}"/>
+                        </p:column>
+                        
+                        <p:column  headerText="First Name &nbsp;&nbsp;" sortBy="#{item.firstName}">
+                            <h:outputText value="#{item.firstName}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Extension">
+                            <h:outputText value="#{item.extension}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Email"  sortBy="#{item.email}">
+                            <h:outputText value="#{item.email}"/>
+                        </p:column>
+                        
+                        <p:column headerText="Job Title" sortBy="#{item.jobTitle}" filterBy="#{item.jobTitle}"  
+                        	filterOptions="#{employeesController.jobTitleFilter}"  
+                			filterMatchMode="exact">
+                            <h:outputText value="#{item.jobTitle}"/> 
+                        </p:column>
+                        
+                        <p:column headerText="Office" sortBy="#{item.office.city}" filterBy="#{item.office.city}"  
+                        	filterOptions="#{employeesController.officeFilter}"  
+                			filterMatchMode="exact">
+                            <h:outputText value="#{item.office.city}"/>
+                        </p:column>
+
+                        <p:column>
+                        
+                        	<p:commandLink id="selectButton" update=":form2:panel" title="Edit" process="@this">
+                     			<h:outputText value="Edit" /> 
+                     			<f:setPropertyActionListener value="#{item}" target="#{employeesController.current}" />
+                 			</p:commandLink >
+                 			|
+                 			<p:commandLink  id="detailButton" update=":form2:display" title="View Details" oncomplete="detailDialog.show()" process="@this">
+                 				<h:outputText value="View" />
+                     			<f:setPropertyActionListener value="#{item}" target="#{employeesController.detailedEmployee}" />
+                 			</p:commandLink >
+                 			|
+                 			<p:commandLink  id="showDialogButton" update=":dialogForm:confirmDialog" title="Delete" oncomplete="confirmation.show()" process="@this">
+                 				<h:outputText value="Delete" />  
+                 				<f:setPropertyActionListener value="#{item}" target="#{employeesController.detailedEmployee}" />
+                 			</p:commandLink >
+        				
+                    	</p:column>
+
+                    </p:dataTable>
+                </h:panelGroup>
+           </h:form>
+                
+                <br/>
+                
+             
+                
+  			<h:form id="form2">
+				<p:messages id="messages" autoUpdate="true"/>  
+				<p:panelGrid columns="4" id="panel" >
+                   
+                    <f:facet name="header">
+                    Create/Update Employee
+                    </f:facet> 
+                   
+                     <h:outputLabel value="First Name:" for="firstName" />                    
+                    <p:inputText label="First Name" id="firstName" value="#{employeesController.current.firstName}" title="First Name" required="true" 
+                    	validatorMessage="#{bundle.EmployeeValidationFirstName}" requiredMessage="#{bundle.EmployeeRequiredMessage_firstName}">
+                    	<f:validateRegex pattern=".*\p{Alpha}{3,16}" />
+                    </p:inputText>
+                   
+					<h:outputLabel value="Last Name:" for="lastName" />
+                    <p:inputText label="Last Name" id="lastName" value="#{employeesController.current.lastName}" title="Last Name" required="true" 
+                    	validatorMessage="#{bundle.EmployeeValidationLastName}" requiredMessage="#{bundle.EmployeeRequiredMessage_lastName}">
+                    	<f:validateRegex pattern="\p{Alpha}{3,16}" />
+                    </p:inputText>
+                    
+                    <h:outputLabel value="Extension:" for="extension" />
+                    <p:inputText label="Extension" id="extension" value="#{employeesController.current.extension}" title="Extension" required="true" 
+                    	validatorMessage="#{bundle.EmployeeValidationExtension}" requiredMessage="#{bundle.EmployeeRequiredMessage_extension}">
+                    	<f:validateRegex pattern="[x|X]?\d{4}" />
+                    </p:inputText>
+
+                    <h:outputLabel value="Email:" for="email" />
+                    <p:inputText label="Email" id="email" value="#{employeesController.current.email}" title="Email" required="true" 
+                    	validatorMessage="#{bundle.EmployeeValidationEmail}" requiredMessage="#{bundle.EmployeeRequiredMessage_email}">
+                    	<f:validateRegex pattern="#{bundle.emailRegex}" />
+                    </p:inputText>
+
+                    <h:outputLabel value="Job Title:" for="jobTitle" />
+
+					<h:selectOneMenu id="jobTitle" value="#{employeesController.current.jobTitle}" required="true" requiredMessage="#{bundle.EmployeeRequiredMessage_jobTitle}">
+                    	<f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+                        <f:selectItems value="#{employeesController.jobTitlesList}" var="job"
+                   			itemLabel="#{job}" itemValue="#{job}"/>
+                    </h:selectOneMenu>
+
+
+                    <h:outputLabel value="Office Code:" for="officeCode" />
+                    <h:selectOneMenu id="officeCode" value="#{employeesController.current.office}" required="true" requiredMessage="#{bundle.EmployeeRequiredMessage_officeCode}">
+                    	<f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+                        <f:selectItems value="#{employeesController.allOffices}" var="off"
+                   			itemLabel="#{off.city}" itemValue="#{off}"/>
+                    </h:selectOneMenu>
+                    
+                    
+					<h:outputLabel />
+					<h:outputLabel />
+					
+
+                    <h:outputLabel value="Reports To:" for="reportsTo" />
+                    <h:selectOneMenu id="reportsTo" value="#{employeesController.current.reportsTo}" required="true" requiredMessage="#{bundle.EmployeeRequiredMessage_reportsTo}">
+                    	<f:selectItem noSelectionOption="true" itemLabel="Please Select"/>
+                        <f:selectItems value="#{employeesController.allManagers}" var="emp"
+                   			itemLabel="#{emp.firstName} #{emp.lastName} (#{emp.jobTitle} )" itemValue="#{emp}"/>
+                    </h:selectOneMenu>
+
+                    <f:facet name="footer">  
+				        <p:commandButton value="Save" icon="ui-icon-check"  actionListener="#{employeesController.createOrUpdateListener}" update=":form:empTable,:form2:panel" />  
+				        <p:commandButton value="Clear" immediate="true" icon="ui-icon-cancel" process="@this" actionListener="#{employeesController.clearListener}" update=":form2:panel" style="margin:5px;"/>
+				    </f:facet> 
+                </p:panelGrid>
+
+
+
+			   <p:dialog id="basicDialog" header="Employee Details" widgetVar="detailDialog"  resizable="false" >  
+							<h:panelGrid  id="display" columns="2">
+			                    <h:outputText value="#{bundle.EmployeeLabel_employeeNumber}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.employeeNumber}" title="#{bundle.EmployeeTitle_employeeNumber}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_lastName}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.lastName}" title="#{bundle.EmployeeTitle_lastName}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_firstName}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.firstName}" title="#{bundle.EmployeeTitle_firstName}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_jobTitle}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.jobTitle}" title="#{bundle.EmployeeTitle_jobTitle}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_email}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.email}" title="#{bundle.EmployeeTitle_email}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_extension}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.extension}" title="#{bundle.EmployeeTitle_extension}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_officeCode}"/>                    
+			                    <h:outputText value="#{employeesController.detailedEmployee.office.officeCode} (#{employeesController.detailedEmployee.office.city})" title="#{bundle.EmployeeTitle_officeCode}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_officePhone}"/>                    
+			                    <h:outputText value="#{employeesController.detailedEmployee.office.phone}" title="#{bundle.EmployeeTitle_officePhone}"/>
+			                    <h:outputText value="#{bundle.EmployeeLabel_reportsTo}"/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.reportsTo.employeeNumber} (#{employeesController.detailedEmployee.reportsTo.firstName} #{employeesController.detailedEmployee.reportsTo.lastName})" />
+			                    <h:outputText value="Version: "/>
+			                    <h:outputText value="#{employeesController.detailedEmployee.version}" />
+			                </h:panelGrid> 
+				</p:dialog>   
+
+		</h:form>
+    
+		<h:form id="dialogForm">
+			<p:confirmDialog id="confirmDialog" header="Confirm Delete Employee" severity="alert" widgetVar="confirmation">  
+	                  	<f:facet name="message">
+						<h:outputText value="Delete #{employeesController.detailedEmployee.firstName} #{employeesController.detailedEmployee.lastName} (Employee Number: #{employeesController.detailedEmployee.employeeNumber}) ?" />
+						</f:facet>
+	                  
+	        <p:commandButton id="confirm" value="Yes" oncomplete="confirmation.hide()"  update=":form:empTable" 
+	                     actionListener="#{employeesController.destroyListener}"/>  
+	        <p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />   
+	                  
+			</p:confirmDialog>  
+		</h:form>
+				
+        </ui:define>
+    </ui:composition>
+</h:body>
+</html>
