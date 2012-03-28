@@ -1,0 +1,11 @@
+/*
+instructions assume you are using mysql.
+1. download and install Classic Models database for mysql
+	http://www.eclipse.org/birt/phoenix/db/
+	modify load_classicmodels.sql:
+		-change filenames to use correct case (Customers.txt vs customers.txt)
+		-replace \\ with / in filepaths
+2. run prime-extra.sql for version field, foreign keys, etc
+3. run prime-load-employees.sql to load employees found in prime-employees.csv
+	Example: prompt$> mysql classicmodels -u youruser -p < prime-load-employees.sql
+*/
