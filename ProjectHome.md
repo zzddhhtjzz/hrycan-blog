@@ -1,0 +1,1 @@
+This project contains the full code for the examples shown on Nick Hrycan's blog located at http://hrycan.com
